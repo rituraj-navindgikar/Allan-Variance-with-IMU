@@ -1,68 +1,72 @@
-# **IMU Noise Characterization with Allan Variance**
+# Feature-Based Panoramic Image Stitching with Calibrated Cameras
 
-This project involves characterizing the noise of the **VNYMR VectorNav 100 IMU** using Allan Variance. It includes ROS 2 packages for IMU data acquisition and processing, along with MATLAB scripts for analysis. The repository is organized into three main sections: source code, data, and analysis.
+## Overview
 
----
+This project implements a pipeline for stitching panoramic images using feature-based matching and calibrated cameras. It leverages OpenCV and NumPy for image processing and ensures accurate perspective transformation to align multiple images into a seamless panorama
 
-## **Repository Structure**
-
-### **1. `src/`**
-- Contains ROS 2 packages:
-  - **`imu_driver`**: ROS 2 driver for interfacing with the VectorNav VNYMR 100 IMU.
-  - **`imu_msgs`**: ROS 2 message definitions used by the driver.
-
-### **2. `data/`**
-- Includes datasets of IMU recordings saved in ROS 2 bag format:
-  - A 15-minute dataset for quick analysis.
-  - A **5-hour dataset** for detailed outcomes ([Download here](https://drive.google.com/drive/folders/1-lNLGQ0DAIOL3fmlQ1-2_LytfiMF2h1J?usp=sharing)).
-
-### **3. `analysis/`**
-- Contains all MATLAB code for data analysis:
-  - **Allan Variance computation** to characterize noise.
-  - **Graphs and histograms** of IMU noise characteristics.
-  - **ROS 2 bag-to-MATLAB conversion script**.
+Additionally, the noise analysis of IMU data from the VectorNav 100 is incorporated to understand potential sources of error and validate sensor accuracy during the process
 
 ---
 
-## **Getting Started**
+## Features
 
-### **1. Prerequisites**
-Ensure the following are installed on your system:
-- **ROS 2** (Humble or later)
-- **MATLAB** (with required toolboxes for data processing)
-- **Python 3** (for ROS 2 integration)
+- **Feature Matching**: Matches key features between image pairs using BFMatcher and a ratio test for filtering
+- **Perspective Transformation**: Aligns images using homographies and supports padded warping to maintain image integrity
+- **Blending**: Combines overlapping image regions with masking and alpha blending for a smooth transition
+- **Visualization**: Provides visual debugging for image matching and stitching processes
+- **IMU Noise Analysis**: Includes insights into yaw, pitch, and roll data distributions, emphasizing Gaussian and skew-normal trends, with histograms for each parameter
 
-### **2. Build the ROS 2 Packages**
-Build the `imu_driver` and `imu_msgs` packages:
-```bash
-colcon build --packages-select imu_msgs imu_driver --symlink-install
-source install/setup.bash
-```
-### **3. Launch the IMU Driver**
-```bash
-ros2 launch imu_driver imu_launch.py
-```
 ---
 
-## Analysing IMU Data
-### **1. Collect Data**
-```bash
-ros2 bag record -o imu_data /imu
-```
-### **2. Convert ROS bag to Matlab Format**
+## Repository Structure
 
-###  **Step 3: Run Allan Variance Analysis**
-Load the converted data into MATLAB and run the Allan Deviation script. This will generate:
+- **main.ipynb**: Contains the primary workflow for loading images, detecting features, matching them, and stitching the panorama
+- **utils.py**: Includes utility functions for tasks like loading images, matching features, perspective warping, and blending
+- **data/**: Contains subfolders with test datasets:
+  - **`cinder_wall/`**: Images with approximately 50% overlap
+  - **`graphic_overlap_15/`**: Images with approximately 15% overlap
+  - **`graphic_overlap_50/`**: Images with approximately 50% overlap
 
-- Allan Variance graphs
-- Histograms and statistical analysis of noise characteristics
+---
 
-run the `plotter.py` file for time-series plots and histograms of each IMU parameter, including:
-- Yaw, pitch, roll
-- Linear acceleration (acc_x, acc_y, acc_z)
-- Angular velocity (gyro_x, gyro_y, gyro_z)
-- Magnetic field (mag_x, mag_y, mag_z)
-	
+## Data Analysis Highlights
 
-Developed By
-Rituraj Navindgikar
+- **IMU Data Observations**:
+  - Yaw and pitch exhibit Gaussian distributions, with minimal noise and no heavy-tailed behavior
+  - Roll data shows a slight skew, indicative of a skew-normal distribution
+  - Acceleration in the X-axis suggests a bimodal distribution due to varying conditions, while Y and Z follow Gaussian trends
+  - Magnetic field data highlights minimal deviations and consistent noise patterns without significant drifts
+
+- **Sources of Noise**:
+  - Vibrations (e.g., machinery, traffic, external activities)
+  - Sensor bias, including bias instability and angle random walk
+  - Environmental factors, such as temperature variations and nearby magnetic/electronic interference
+
+---
+
+## How to Run
+
+1. Clone the repository and ensure the required dependencies are installed
+2. Use the datasets in the `data/` folder or your own images for testing
+3. Open `main.ipynb` and follow the workflow to process your images and create the panorama
+4. Use `utils.py` for debugging or extending the stitching process
+
+---
+
+## Future Work
+
+- Improve feature detection and matching for challenging scenarios like low-texture areas
+- Integrate real-time stitching support for video feeds
+- Optimize the blending process for dynamic scenes
+
+---
+
+## Acknowledgments
+
+- This project uses OpenCV for image processing and feature matching
+- IMU noise analysis and insights inspired by Allan Variance studies and sensor data interpretation
+
+---
+
+Developed by  
+**Rituraj Navindgikar**  
