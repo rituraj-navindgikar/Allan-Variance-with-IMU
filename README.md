@@ -37,7 +37,7 @@ Build the `imu_driver` and `imu_msgs` packages:
 ```bash
 colcon build --packages-select imu_msgs imu_driver --symlink-install
 source install/setup.bash
-
+```
 ### **3. Launch the IMU Driver**
 ```bash
 ros2 launch imu_driver imu_launch.py
