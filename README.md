@@ -42,11 +42,27 @@ source install/setup.bash
 ```bash
 ros2 launch imu_driver imu_launch.py
 ```
+---
 
-### **Collect Data**
+## Analysing IMU Data
+### **1. Collect Data**
 ```bash
 ros2 bag record -o imu_data /imu
 ```
+### **2. Convert ROS bag to Matlab Format**
+
+###  **Step 3: Run Allan Variance Analysis**
+Load the converted data into MATLAB and run the Allan Deviation script. This will generate:
+
+- Allan Variance graphs
+- Histograms and statistical analysis of noise characteristics
+
+run the `plotter.py` file for time-series plots and histograms of each IMU parameter, including:
+- Yaw, pitch, roll
+- Linear acceleration (acc_x, acc_y, acc_z)
+- Angular velocity (gyro_x, gyro_y, gyro_z)
+- Magnetic field (mag_x, mag_y, mag_z)
+	
 
 Developed By
 Rituraj Navindgikar
